@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/profile"
+        android:icon="@drawable/ic_menuicon"
+        android:title="@string/profile"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/postNewLoanRequest"
+        android:icon="@drawable/ic_menuicon"
+        android:title="@string/New_Loan_Request"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/postNewLoanOffer"
+        android:icon="@drawable/ic_menuicon"
+        android:title="@string/New_Loan_Offer"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/signOut"
+        android:icon="@drawable/ic_menuicon"
+        android:title="@string/Sign_Out"
+        app:showAsAction="never"/>
+</menu>

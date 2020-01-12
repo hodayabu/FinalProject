@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Students Bank</string>
+    <string name="imageview_for_updated_image">imageView for updated image</string>
+    <string name="profile">Profile</string>
+    <string name="New_Loan_Request">Request For Loan</string>
+    <string name="New_Loan_Offer">Offer New Loan</string>
+    <string name="Sign_Out">Sign Out</string>
+</resources>
