@@ -3,15 +3,16 @@ package com.example.finalproject.UI.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.finalproject.R;
+import com.example.finalproject.ServerRequests.ViewModel;
 import com.example.finalproject.UI.FirebaseConnection.Upload;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,12 +27,13 @@ public class HomePage extends menuActivity {
     Button offered;
     Button askedFor;
     Button owes;
+    Button newOffer;
+    Button mail;
+    Button newRequest;
     TextView userName;
-    TextView interest;
-    TextView rank;
     ImageView pic;
     private DatabaseReference mDatabaseRef;
-    RatingBar ratingBar;
+
 
 
     @Override
@@ -41,21 +43,35 @@ public class HomePage extends menuActivity {
 
         loans=(Button)findViewById(R.id.loansIGave);
         offered=(Button)findViewById(R.id.offer);
+        newOffer=(Button)findViewById(R.id.newOffer);
+        newRequest=(Button)findViewById(R.id.newRequest);
         askedFor=(Button)findViewById(R.id.askedFor);
         owes=(Button)findViewById(R.id.owes);
         userName=(TextView) findViewById(R.id.welcomeUser);
-        interest=(TextView)findViewById(R.id.userData);
-        rank=(TextView)findViewById(R.id.interestHomePage);
         pic=(ImageView) findViewById(R.id.homePageImg);
-        ratingBar=(RatingBar) findViewById(R.id.ratingBar);
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
-
-        ratingBar.setRating(Float.parseFloat(MainActivity.getDefaults("rank",HomePage.this)));
+        mail = findViewById(R.id.mailButton);
 
         setData();
         setImage();
+        mail.setEnabled(chaeckMailBox());// notification if mailBox full
+
+        //resize loans and owe according to the user balance
+        balanceLoans();
+        balanceOwe();
 
 
+        //loans.setLayoutParams (new ConstraintLayout.LayoutParams(100, 50));
+        //owes.setLayoutParams (new ConstraintLayout.LayoutParams(100, 50));
+
+
+        mail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, Inbox.class);
+                startActivity(intent);
+            }
+        });
 
         owes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +85,8 @@ public class HomePage extends menuActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomePage.this, loansIGave.class);
-                startActivity(intent);            }
+                startActivity(intent);
+                }
         });
 
         offered.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +107,59 @@ public class HomePage extends menuActivity {
             }
         });
 
+        newOffer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, newLoanOffer.class);
+                startActivity(intent);
+
+            }
+        });
+
+        newRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, newLoanRequest.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void balanceOwe() {
+        String strTotalOwe=MainActivity.getDefaults("totalOwes",HomePage.this);
+        int totalOwe=Integer.parseInt(strTotalOwe);
+        int newWidth= calculateSize(totalOwe);
+
+        ViewGroup.LayoutParams params = owes.getLayoutParams();
+        params.width = newWidth;
+        owes.setLayoutParams(params);
+    }
+
+    private void balanceLoans() {
+
+        String strTotalLoans=MainActivity.getDefaults("totalLoans",HomePage.this);
+        int totalLoans=Integer.parseInt(strTotalLoans);
+        int newWidth= calculateSize(totalLoans);
+
+        ViewGroup.LayoutParams params = loans.getLayoutParams();
+        params.width = newWidth;
+        loans.setLayoutParams(params);
+    }
+
+    private int calculateSize(int total) {
+
+
+        if(total>=4000) return 900; //max size
+        if(total>=3000) return 750;
+        if(total>=2000) return 550;
+        if(total>=1000) return 400;
+
+        else return 200;//min size
+    }
+
+    private boolean chaeckMailBox() {
+        return ViewModel.getInstance().checkMailBox();
     }
 
     private void setImage() {
@@ -117,7 +187,6 @@ public class HomePage extends menuActivity {
 
     private void setData() {
         userName.setText("Hello "+MainActivity.getDefaults("userName",HomePage.this));
-        interest.setText("You Will Pay: "+MainActivity.getDefaults("interest",HomePage.this)+"% interest");
-        rank.setText("Your rank in the system: "+MainActivity.getDefaults("rank",HomePage.this));
+
     }
 }

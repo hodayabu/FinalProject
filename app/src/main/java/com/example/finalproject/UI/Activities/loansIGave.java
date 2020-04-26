@@ -35,6 +35,7 @@ public class loansIGave extends menuActivity implements ImageAdapter.OnItemClick
     private DatabaseReference mDatabaseRef;
     private List<ImageDisplayItem> mUploads;
     private List<gaveAndOweLoans> usersFromServer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

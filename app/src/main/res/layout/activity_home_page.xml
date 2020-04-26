@@ -7,46 +7,6 @@
     tools:context=".UI.Activities.HomePage">
 
     <TextView
-        android:id="@+id/interestHomePage"
-        android:layout_width="221dp"
-        android:layout_height="37dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.099"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.286" />
-
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="239dp"
-        android:layout_height="52dp"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:rating="3.5"
-        android:theme="@style/RatingBar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.203"
-        />
-
-    <TextView
-        android:id="@+id/userData"
-        android:layout_width="237dp"
-        android:layout_height="42dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.091"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.139" />
-
-    <TextView
         android:id="@+id/welcomeUser"
         android:layout_width="242dp"
         android:layout_height="69dp"
@@ -73,22 +33,81 @@
         app:srcCompat="@drawable/homepageuser" />
 
     <Button
-        android:id="@+id/offer"
+        android:id="@+id/mailButton"
+        android:layout_width="93dp"
+        android:layout_height="82dp"
+        android:background="@drawable/button_mail"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.073"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.178" />
+
+    <Button
+        android:id="@+id/loansIGave"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/colorGreen"
+        android:shadowColor="@color/colorGreen"
+        android:text="Who I Loan To?"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.531" />
+
+    <Button
+        android:id="@+id/owes"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/colorRed"
+        android:shadowColor="@color/colorRed"
+        android:text="Who I Owe To?"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.387" />
+
+    <Button
+        android:id="@+id/offer"
+        android:layout_width="113dp"
+        android:layout_height="90dp"
         android:background="@drawable/button_oval"
         android:text="Loans I Offered"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.173"
+        app:layout_constraintHorizontal_bias="0.228"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.635" />
+        app:layout_constraintVertical_bias="0.957" />
+
+    <Button
+        android:id="@+id/newRequest"
+        android:layout_width="113dp"
+        android:layout_height="90dp"
+        android:background="@drawable/button_oval"
+        android:text="New Request"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.228"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.725" />
 
     <Button
         android:id="@+id/askedFor"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="113dp"
+        android:layout_height="90dp"
         android:background="@drawable/button_oval"
         android:text="Loans I Asked For"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,32 +115,19 @@
         app:layout_constraintHorizontal_bias="0.765"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.477" />
+        app:layout_constraintVertical_bias="0.725" />
 
     <Button
-        android:id="@+id/loansIGave"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/newOffer"
+        android:layout_width="113dp"
+        android:layout_height="90dp"
         android:background="@drawable/button_oval"
-        android:text="Who I Loan To?"
+        android:text="New Offer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.765"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.793" />
-
-    <Button
-        android:id="@+id/owes"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/button_oval"
-        android:text="Who I Owe To?"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.173"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.952" />
+        app:layout_constraintVertical_bias="0.957" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

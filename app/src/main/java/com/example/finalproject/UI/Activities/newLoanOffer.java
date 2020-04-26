@@ -3,8 +3,10 @@ package com.example.finalproject.UI.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,47 +14,56 @@ import com.example.finalproject.R;
 import com.example.finalproject.ServerRequests.ViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class newLoanOffer extends menuActivity {
+public class newLoanOffer extends menuActivity implements AdapterView.OnItemSelectedListener {
 
     TextView tvProgressLabel;
     Button postOffer;
     private TextInputLayout rankFilter;
     private TextInputLayout period;
-    int progress=0;
+    int amount=500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_loan_offer);
 
-        SeekBar seekBar = findViewById(R.id.seekBarOffer);
         postOffer = (Button) findViewById(R.id.postOffer);
         rankFilter = findViewById(R.id.rankFilter);
         period = findViewById(R.id.period);
-
-        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
-
-        progress = seekBar.getProgress();
         tvProgressLabel = findViewById(R.id.progress);
-        tvProgressLabel.setText("Amount: " + progress);
+        Spinner spinner = findViewById(R.id.spinner1);
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.amounts, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+
 
         postOffer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress = seekBar.getProgress();
-                if(validInput(period.getEditText().getText().toString(),rankFilter.getEditText().getText().toString(),progress)) {
-                    postNewLoanOffer(period.getEditText().getText().toString(),rankFilter.getEditText().getText().toString(),progress);
+
+                if(validInput(period.getEditText().getText().toString(),rankFilter.getEditText().getText().toString(),amount)) {
+                    int loadId=postNewLoanOffer(period.getEditText().getText().toString(),rankFilter.getEditText().getText().toString(),amount);
+                    System.out.println("***************************************");
+                    System.out.println("id of offer got from new loan offer screen:    "+loadId);
+                    System.out.println("***************************************");
                     Toast.makeText(newLoanOffer.this,"Offer Posted Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(newLoanOffer.this, FindMatch.class);
                     Bundle b = new Bundle();
                     b.putString("rankFilter",rankFilter.getEditText().getText().toString() );
-                    b.putString("amount",progress+"");
+                    b.putString("amount",amount+"");
+                    b.putString("period",period.getEditText().getText().toString());
+                    b.putInt("offerLoanId",loadId);
                     intent.putExtras(b);
                     startActivity(intent);
                     finish();
                 }
                 else {
-                    String input="Please enter valid amount and loan reason";
+                    String input="Please enter valid parameters";
                     Toast.makeText(getApplicationContext(), input, Toast.LENGTH_SHORT).show();
                 }
 
@@ -60,12 +71,24 @@ public class newLoanOffer extends menuActivity {
         });
     }
 
-    private void postNewLoanOffer(String period,String rankFilter, int amount) {
-        ViewModel.getInstance().postNewOffer(period,rankFilter,amount);
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        amount=Integer.parseInt(text);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        amount=4000;
+    }
+
+
+    private int postNewLoanOffer(String period,String rankFilter, int amount) {
+        return ViewModel.getInstance().postNewOffer(period,rankFilter,amount);
     }
 
     private boolean validInput(String period,String rankFilter, int progress) {
-        if(period.length()==0||rankFilter.length()==0||progress<500||progress>5000){
+        if(period.length()==0||rankFilter.length()==0||progress<500||progress>4000){
             return false;
         }
         try {
@@ -81,27 +104,6 @@ public class newLoanOffer extends menuActivity {
         return true;
     }
 
-
-    SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            // updated continuously as the user slides the thumb
-            tvProgressLabel.setText("Amount: " + progress+" NIS");
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            //TO-DO delete if there is no use!
-            // called when the user first touches the SeekBar
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            //TO-DO add here the calculation of the RIBIT for this user by rank
-            // called after the user finishes moving the SeekBar
-        }
-    };
 
 
 

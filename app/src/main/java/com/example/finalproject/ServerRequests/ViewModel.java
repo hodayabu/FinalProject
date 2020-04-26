@@ -2,8 +2,10 @@ package com.example.finalproject.ServerRequests;
 
 import android.content.Context;
 
+import com.example.finalproject.ResponseObjects.agreementData;
 import com.example.finalproject.ResponseObjects.askedLoans;
 import com.example.finalproject.ResponseObjects.gaveAndOweLoans;
+import com.example.finalproject.ResponseObjects.mailMsg;
 import com.example.finalproject.ResponseObjects.postOffer;
 import com.example.finalproject.ResponseObjects.postRequest;
 import com.example.finalproject.ResponseObjects.postedLoan;
@@ -15,6 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /*
 Singeltone class
  */
+
 public class ViewModel {
 
     private static ViewModel viewModel;
@@ -38,7 +44,7 @@ public class ViewModel {
 
     private ViewModel() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://132.73.195.25:3000/")//the server url
+                .baseUrl("http://192.168.1.16:3000/")//the server url
                 .addConverterFactory(GsonConverterFactory.create())//convert json that returns from server to java object that we created
                 .build();
         jsonPlaceHolderApi = retrofit.create(com.example.finalproject.ServerRequests.jsonPlaceHolderApi.class);
@@ -93,8 +99,9 @@ public class ViewModel {
                             this.token = "" + data.get("token");
                             MainActivity.setDefaults("token", "" + data.get("token"), context);
                             MainActivity.setDefaults("userName", userName,context);
-                            MainActivity.setDefaults("rank", ""+data.get("rank"),context);
-                            MainActivity.setDefaults("interest", ""+data.get("interest"),context);
+                            MainActivity.setDefaults("totalLoans", "" + data.get("totalLoan"),context);
+                            MainActivity.setDefaults("totalOwes", "" + data.get("totalOwes"),context);
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -126,7 +133,6 @@ public class ViewModel {
 
 
     public List<postedLoan> getAllPostedLoans() {
-
 
         class MyRunnable implements Runnable {
             List<postedLoan> ans;
@@ -365,25 +371,80 @@ public class ViewModel {
         return myRunnable.ans;
     }
 
-    public void postNewOffer(String period, String rankFilter, int amount) {
-        String token = MainActivity.getDefaults("token", context);
-        postOffer postOffer=new postOffer(amount,period,Float.parseFloat(rankFilter));
-        Call<ResponseBody> call=jsonPlaceHolderApi.postOffer(token,postOffer);
-        call.enqueue(new Callback<ResponseBody>() {
+    public int postNewOffer(String period, String rankFilter, int amount) {
+        //Unsyncronic request
+//        String token = MainActivity.getDefaults("token", context);
+//        postOffer postOffer=new postOffer(amount,period,Float.parseFloat(rankFilter));
+//        Call<ResponseBody> call=jsonPlaceHolderApi.postOffer(token,postOffer);
+//        call.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if(!response.isSuccessful()){
+//                    MainActivity.toast("PostLoan Offer Failed",context);
+//                }
+//                //need to return loan id ?
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                MainActivity.toast("PostLoan Offer Failed",context);
+//
+//            }
+//        });
+
+
+
+
+
+
+
+
+
+
+
+        class MyRunnable implements Runnable {
+            String ans;
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(!response.isSuccessful()){
-                    MainActivity.toast("PostLoan Offer Failed",context);
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                postOffer postOffer=new postOffer(amount,period,Float.parseFloat(rankFilter));
+                Call<ResponseBody> call=jsonPlaceHolderApi.postOffer(token,postOffer);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        data = new JSONObject(response.body().string());
+
+                        this.ans = "" + data.get("loanId");
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }//run
+        }//Runnable
 
-            }
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int id=Integer.parseInt(myRunnable.ans);
+        return id;
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                MainActivity.toast("PostLoan Offer Failed",context);
-
-            }
-        });
     }
 
     public List<askedLoans> findMatch(String rankFilter, String amount) {
@@ -412,6 +473,290 @@ public class ViewModel {
                         }
                         List<askedLoans> match = response.body();
                         ans=match;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }//run
+        }//Runnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+    }
+
+//****************************************************************************************************************
+//****************************************************************************************************************
+    //TO_DO- complete all server functions
+//****************************************************************************************************************
+//****************************************************************************************************************
+
+    public boolean checkMailBox() {
+        //call server- if there are new mails return true
+        return true;
+    }
+
+    public float calculateRank(String userName, int amount) {
+        //call server calculate with machine learning the interest for this user at this amount
+        return 2;
+    }
+
+    public boolean checkUserFullName(String fullName, String userName) {
+        //call server and check if the full name of this user is correct.
+        //******maybe ruturn the real full name and compare- so if there is an error- show the user his registered full name
+        return true;
+    }
+
+
+    //////////////////////////////////////TO DO on 02/04/2020//////////////////////////
+
+    public void AgreementFromGiver(String giver, String receiver, String period, String description, int amount, float interest, int offerId,int requestId) {
+    //void-->syncronic request from server
+    //convert the period to date
+        Date c = Calendar.getInstance().getTime();
+        Date added=addMonth(c,Integer.parseInt(period));
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(added);
+
+        String token = MainActivity.getDefaults("token", context);
+        agreementData agreementData=new agreementData(0,giver,receiver,formattedDate,description,amount,interest,offerId,requestId,false);
+        Call<ResponseBody> call=jsonPlaceHolderApi.AgreementFromGiver(token,agreementData);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(!response.isSuccessful()){
+                    MainActivity.toast("Agreement For Loan Failed",context);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MainActivity.toast("Agreement For Loan Failed",context);
+
+            }
+        });
+
+
+
+
+
+        //call server to insert the data to table "approval_progress" with boolean 0 (one side approve only)
+        //add to "mail" table under category 1 with the receiver user name
+        //remove offer from offered_loans in server
+    }
+
+
+    public static Date addMonth(Date date, int i) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, i);
+        return cal.getTime();
+    }
+
+
+    public List<agreementData> getAllwaitingMsg() {
+
+        class MyRunnable implements Runnable {
+            List<agreementData> ans;
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Call<List<agreementData>> call = jsonPlaceHolderApi.getAllwaitingMsg(token);
+
+                try {
+                    Response<List<agreementData>> response = call.execute();
+                    JSONArray data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        List<agreementData> allmsg = response.body();
+                        ans=allmsg;
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }//run
+        }//Runnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+
+    }
+
+    public void AgreementFromReciever(int loanId, String giver) {
+        //void-->syncronic request from server
+        //convert the period to date
+
+        String token = MainActivity.getDefaults("token", context);
+        Map<String,String> json=new HashMap<>();
+        json.put("giver",giver);
+        json.put("loanId",loanId+"");
+        Call<ResponseBody> call=jsonPlaceHolderApi.AgreementFromReciever(token,json);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(!response.isSuccessful()){
+                    MainActivity.toast("Agreement For Loan Failed",context);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MainActivity.toast("Agreement For Loan Failed",context);
+
+            }
+        });
+
+
+
+
+
+        //change field in loanId record at agreement progress to boolean 1
+        //add to "mail" table under category 2 with the giver user name
+        //remove request from requested_loans in server(where the requestId is the requestId on table approval_progress
+    }
+
+    public List<agreementData> getAllwaitingForPayment() {
+
+        class MyRunnable implements Runnable {
+            List<agreementData> ans;
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Call<List<agreementData>> call = jsonPlaceHolderApi.getAllwaitingForPayment(token);
+
+                try {
+                    Response<List<agreementData>> response = call.execute();
+                    JSONArray data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        List<agreementData> allmsg = response.body();
+                        ans=allmsg;
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }//run
+        }//Runnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+    }
+
+    public String paypalTest(int amount,int loanId) {
+
+        class MyRunnable implements Runnable {
+
+            String ans;
+
+
+            @Override
+            public void run() {
+
+                Map<String, Integer> json = new HashMap<>();
+                json.put("amount", amount);
+                json.put("loanId", loanId);
+                Call<ResponseBody> call = jsonPlaceHolderApi.paypalTest(json);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+                    try {
+                        if (response.body() == null) {
+                            ans = "";
+                            System.out.println("No Body for req");
+                        } else {
+                            data = new JSONObject(response.body().string());
+                            this.ans = ""+data.get("paymentUrl");
+
+
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }//MyRunnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+
+    }
+
+    public List<mailMsg> gatAllCompletedLoans() {
+
+        class MyRunnable implements Runnable {
+            List<mailMsg> ans;
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Call<List<mailMsg>> call = jsonPlaceHolderApi.gatAllCompletedLoans(token);
+
+                try {
+                    Response<List<mailMsg>> response = call.execute();
+                    JSONArray data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        List<mailMsg> mailMsg = response.body();
+                        ans=mailMsg;
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

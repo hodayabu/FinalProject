@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject.R;
 import com.example.finalproject.ResponseObjects.userInfo;
@@ -24,7 +26,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class userProfile extends menuActivity {
+public class MatchUserProfile extends AppCompatActivity {
 
     TextView name;
     TextView facebook;
@@ -35,28 +37,66 @@ public class userProfile extends menuActivity {
     String currentUserName;
     private DatabaseReference mDatabaseRef;
     String facebookUrl;
+    Button sendOffer;
+    int offerLoanId;
+    int requestLoanId;
+
+    //data type to pass for giver agreement
+    private String period;
+    private String description;
+    //this is the amount that the user asked for!! not the one that offered.
+    private int amount;
+    private float interest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
+        setContentView(R.layout.activity_match_user_profile);
 
-        name=(TextView)findViewById(R.id.Name);
-        facebook=(TextView)findViewById(R.id.facebook);
-        phone=(TextView)findViewById(R.id.phone);
-        mail=(TextView)findViewById(R.id.mail);
-        university=(TextView)findViewById(R.id.university);
-        profilePic=(ImageView)findViewById(R.id.profileImg) ;
+        name=(TextView)findViewById(R.id.MName);
+        sendOffer=(Button) findViewById(R.id.sendFinalOffer);
+        facebook=(TextView)findViewById(R.id.Mfacebook);
+        phone=(TextView)findViewById(R.id.Mphone);
+        mail=(TextView)findViewById(R.id.Mmail);
+        university=(TextView)findViewById(R.id.Muniversity);
+        profilePic=(ImageView)findViewById(R.id.MprofileImg) ;
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
-
+        //get the potential user data--from screen FindMatch
         Bundle b = getIntent().getExtras();
-        if(b != null)
+        if(b != null) {
             currentUserName = b.getString("userName");
-
+            period = b.getString("period");
+            description = b.getString("description");
+            amount = b.getInt("amount");
+            interest = b.getFloat("interest");
+            offerLoanId=b.getInt("offerLoanId");
+            requestLoanId=b.getInt("requestLoanId");
+        }
         loadImg();
         loadInfo();
+
+        sendOffer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MatchUserProfile.this, giverAgreement.class);
+                Bundle b = new Bundle();
+
+                //To-Do add to bundle all loan details---from find match
+                b.putString("userName", currentUserName);
+                b.putInt("amount",amount);
+                b.putString("period", period);
+                b.putString("description", description);
+                b.putFloat("interest", interest);
+                b.putInt("offerLoanId", offerLoanId);
+                b.putInt("requestLoanId", requestLoanId);
+                intent.putExtras(b);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         facebook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +134,7 @@ public class userProfile extends menuActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
                     Upload u= dataSnapshot1.getValue(Upload.class);
-                    Picasso.with(userProfile.this)
+                    Picasso.with(MatchUserProfile.this)
                             .load(u.getImageUrl())
                             .placeholder(R.mipmap.ic_launcher)
                             .fit()
@@ -105,9 +145,12 @@ public class userProfile extends menuActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(userProfile.this,"Couldn't load image",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MatchUserProfile.this,"Couldn't load image",Toast.LENGTH_SHORT).show();
             }
         });
 
     }
+
+
+
 }

@@ -28,7 +28,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".UI.Activities.FindMatch"></activity>
+        <activity android:name=".UI.Activities.loansCompleted"></activity>
+        <activity android:name=".UI.Activities.paypalTest" />
+        <activity android:name=".UI.Activities.payPal" />
+        <activity android:name=".UI.Activities.giver_payments" />
+        <activity android:name=".UI.Activities.recieverAgreement" />
+        <activity android:name=".UI.Activities.loanDetails" />
+        <activity android:name=".UI.Activities.waitForApprove" />
+        <activity android:name=".UI.Activities.MatchUserProfile" />
+        <activity android:name=".UI.Activities.Inbox" />
+        <activity android:name=".UI.Activities.giverAgreement" />
+        <activity android:name=".UI.Activities.FindMatch" />
         <activity android:name=".UI.Activities.newLoanOffer" />
         <activity android:name=".UI.Activities.menuActivity" />
         <activity android:name=".UI.Activities.userProfile" />
@@ -51,11 +61,23 @@
         <activity android:name=".UI.Activities.AskedLoans" />
         <activity android:name=".UI.Activities.PostedLoans" />
         <activity android:name=".UI.Activities.HomePage" />
-        <activity android:name=".UI.Activities.MainActivity">
+        <activity
+            android:name=".UI.Activities.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="post_detail"
+                    android:scheme="selphone" />
             </intent-filter>
         </activity>
 

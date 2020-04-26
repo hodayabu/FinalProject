@@ -4,85 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.Activities.userProfile">
+    tools:context=".UI.Activities.loanDetails">
 
     <TextView
-        android:id="@+id/university"
+        android:id="@+id/giver"
         android:layout_width="322dp"
         android:layout_height="60dp"
-        android:text="University :"
+        android:text="The user who offer the loan :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.438"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.751" />
+        app:layout_constraintVertical_bias="0.092" />
 
     <TextView
-        android:id="@+id/mail"
+        android:id="@+id/description"
         android:layout_width="322dp"
         android:layout_height="60dp"
-        android:text="Mail :"
+        android:text="Your Request Description :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.404"
+        app:layout_constraintHorizontal_bias="0.438"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.609" />
-
-    <ImageView
-        android:id="@+id/profileImg"
-        android:layout_width="302dp"
-        android:layout_height="139dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.064"
-        app:srcCompat="@drawable/profile" />
+        app:layout_constraintVertical_bias="0.532" />
 
     <TextView
-        android:id="@+id/Name"
+        android:id="@+id/amount"
         android:layout_width="322dp"
         android:layout_height="60dp"
-        android:text="Name :"
+        android:text="Loan Amount :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.382"
+        app:layout_constraintHorizontal_bias="0.438"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.335" />
+        app:layout_constraintVertical_bias="0.381" />
 
     <TextView
-        android:id="@+id/facebook"
+        android:id="@+id/interest"
         android:layout_width="322dp"
         android:layout_height="60dp"
-        android:clickable="true"
-        android:cursorVisible="true"
-        android:text="Facebook Url :"
-        android:textColor="@android:color/holo_blue_dark"
+        android:text="Interest Percent :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.325"
+        app:layout_constraintHorizontal_bias="0.438"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.923" />
+        app:layout_constraintVertical_bias="0.235" />
 
     <TextView
-        android:id="@+id/phone"
-        android:layout_width="325dp"
-        android:layout_height="61dp"
-        android:text="Phone :"
+        android:id="@+id/exparationDate"
+        android:layout_width="322dp"
+        android:layout_height="60dp"
+        android:text="The Loan Is Until :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.418"
+        app:layout_constraintHorizontal_bias="0.438"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.476" />
+        app:layout_constraintVertical_bias="0.688" />
+
+    <Button
+        android:id="@+id/exceptLoan"
+        android:layout_width="173dp"
+        android:layout_height="57dp"
+        android:text="Except The Offer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.934" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,36 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.Activities.userProfile">
+    tools:context=".UI.Activities.MatchUserProfile">
+
+
+    <Button
+        android:id="@+id/sendFinalOffer"
+        android:layout_width="173dp"
+        android:layout_height="57dp"
+        android:text="Send Offer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.934" />
 
     <TextView
-        android:id="@+id/university"
+        android:id="@+id/Muniversity"
         android:layout_width="322dp"
         android:layout_height="60dp"
         android:text="University :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.438"
+        app:layout_constraintHorizontal_bias="0.382"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.751" />
+        app:layout_constraintVertical_bias="0.678" />
 
     <TextView
-        android:id="@+id/mail"
+        android:id="@+id/Mmail"
         android:layout_width="322dp"
         android:layout_height="60dp"
         android:text="Mail :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.404"
+        app:layout_constraintHorizontal_bias="0.37"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.609" />
+        app:layout_constraintVertical_bias="0.555" />
 
     <ImageView
-        android:id="@+id/profileImg"
+        android:id="@+id/MprofileImg"
         android:layout_width="302dp"
         android:layout_height="139dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +58,7 @@
         app:srcCompat="@drawable/profile" />
 
     <TextView
-        android:id="@+id/Name"
+        android:id="@+id/MName"
         android:layout_width="322dp"
         android:layout_height="60dp"
         android:text="Name :"
@@ -55,10 +68,10 @@
         app:layout_constraintHorizontal_bias="0.382"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.335" />
+        app:layout_constraintVertical_bias="0.301" />
 
     <TextView
-        android:id="@+id/facebook"
+        android:id="@+id/Mfacebook"
         android:layout_width="322dp"
         android:layout_height="60dp"
         android:clickable="true"
@@ -68,21 +81,23 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.325"
+        app:layout_constraintHorizontal_bias="0.382"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.923" />
+        app:layout_constraintVertical_bias="0.806" />
 
     <TextView
-        android:id="@+id/phone"
+        android:id="@+id/Mphone"
         android:layout_width="325dp"
         android:layout_height="61dp"
         android:text="Phone :"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.418"
+        app:layout_constraintHorizontal_bias="0.383"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.476" />
+        app:layout_constraintVertical_bias="0.429" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,4 +5,14 @@
     <string name="New_Loan_Request">Request For Loan</string>
     <string name="New_Loan_Offer">Offer New Loan</string>
     <string name="Sign_Out">Sign Out</string>
+    <string-array name="amounts">
+        <item>4000</item>
+        <item>3500</item>
+        <item>3000</item>
+        <item>2500</item>
+        <item>2000</item>
+        <item>1500</item>
+        <item>1000</item>
+        <item>500</item>
+    </string-array>
 </resources>

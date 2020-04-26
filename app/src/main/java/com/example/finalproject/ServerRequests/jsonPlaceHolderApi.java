@@ -1,7 +1,9 @@
 package com.example.finalproject.ServerRequests;
 
+import com.example.finalproject.ResponseObjects.agreementData;
 import com.example.finalproject.ResponseObjects.askedLoans;
 import com.example.finalproject.ResponseObjects.gaveAndOweLoans;
+import com.example.finalproject.ResponseObjects.mailMsg;
 import com.example.finalproject.ResponseObjects.postOffer;
 import com.example.finalproject.ResponseObjects.postRequest;
 import com.example.finalproject.ResponseObjects.postedLoan;
@@ -66,4 +68,21 @@ public interface jsonPlaceHolderApi {
     @POST("private/getAllPotenialLoanRequests")
     Call<List<askedLoans>> findMatch(@Header("x-auth-token") String token,@Body Map<String,Float> json);
 
+    @POST("private/AgreementFromGiver")
+    Call<ResponseBody> AgreementFromGiver(@Header("x-auth-token") String token, @Body agreementData agreementData);
+
+    @POST("private/getAllwaitingMsg")
+    Call<List<agreementData>> getAllwaitingMsg(@Header("x-auth-token") String token);
+
+    @POST("private/AgreementFromReciever")
+    Call<ResponseBody> AgreementFromReciever(@Header("x-auth-token") String token,@Body Map<String,String> json);
+
+    @POST("private/getAllwaitingForPayment")
+    Call<List<agreementData>> getAllwaitingForPayment(@Header("x-auth-token") String token);
+
+    @POST("pay")
+    Call<ResponseBody> paypalTest(@Body Map<String,Integer> map);
+
+    @POST("private/gatAllCompletedLoans")
+    Call<List<mailMsg>> gatAllCompletedLoans(@Header("x-auth-token") String token);
 }
