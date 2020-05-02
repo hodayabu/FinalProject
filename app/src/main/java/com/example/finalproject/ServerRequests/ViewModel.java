@@ -44,7 +44,7 @@ public class ViewModel {
 
     private ViewModel() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.16:3000/")//the server url
+                .baseUrl("http://192.168.1.13:3000/")//the server url
                 .addConverterFactory(GsonConverterFactory.create())//convert json that returns from server to java object that we created
                 .build();
         jsonPlaceHolderApi = retrofit.create(com.example.finalproject.ServerRequests.jsonPlaceHolderApi.class);
@@ -508,9 +508,66 @@ public class ViewModel {
     }
 
     public boolean checkUserFullName(String fullName, String userName) {
+
+        class MyRunnable implements Runnable {
+            String name;
+            String userName;
+            boolean ans;
+
+            public MyRunnable(String name, String userName) {
+                this.name = name;
+                this.userName = userName;
+            }
+
+            @Override
+            public void run() {
+                Map<String, String> json = new HashMap<>();
+                json.put("fullName", name);
+                json.put("userName", userName);
+                Call<ResponseBody> call = jsonPlaceHolderApi.checkUserFullName(json);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+                    try {
+                        if (response.body() == null) {
+                            ans = false;
+                            System.out.println("No Body for req");
+                        } else {
+                            data = new JSONObject(response.body().string());
+                            if(data.get("value").equals("true"))
+                                this.ans = true;
+                            else this.ans=false;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }//MyRunnable
+
+        MyRunnable myRunnable = new MyRunnable(fullName, userName);
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+
+
+
+
         //call server and check if the full name of this user is correct.
         //******maybe ruturn the real full name and compare- so if there is an error- show the user his registered full name
-        return true;
     }
 
 
@@ -703,9 +760,6 @@ public class ViewModel {
                         } else {
                             data = new JSONObject(response.body().string());
                             this.ans = ""+data.get("paymentUrl");
-
-
-
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -741,6 +795,149 @@ public class ViewModel {
             public void run() {
                 String token = MainActivity.getDefaults("token", context);
                 Call<List<mailMsg>> call = jsonPlaceHolderApi.gatAllCompletedLoans(token);
+
+                try {
+                    Response<List<mailMsg>> response = call.execute();
+                    JSONArray data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        List<mailMsg> mailMsg = response.body();
+                        ans=mailMsg;
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }//run
+        }//Runnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+    }
+
+    public List<gaveAndOweLoans> getAllMonthDebts() {
+
+        class MyRunnable implements Runnable {
+            List<gaveAndOweLoans> ans;
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Call<List<gaveAndOweLoans>> call = jsonPlaceHolderApi.monthDebts(token);
+
+                try {
+                    Response<List<gaveAndOweLoans>> response = call.execute();
+                    JSONArray data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        List<gaveAndOweLoans> loansIGave = response.body();
+                        ans=loansIGave;
+                        System.out.println("))))))))))))))))))))");
+                        System.out.println(loansIGave.get(0).getLoanID());
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }//run
+        }//Runnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+
+    }
+
+    public String paypalBack(int amount, int loanId) {
+
+        class MyRunnable implements Runnable {
+
+            String ans;
+
+
+            @Override
+            public void run() {
+
+                Map<String, Integer> json = new HashMap<>();
+                json.put("amount", amount);
+                json.put("loanId", loanId);
+                Call<ResponseBody> call = jsonPlaceHolderApi.paypalBack(json);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+                    try {
+                        if (response.body() == null) {
+                            ans = "";
+                            System.out.println("No Body for req");
+                        } else {
+                            data = new JSONObject(response.body().string());
+                            this.ans = ""+data.get("paymentUrl");
+
+
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }//MyRunnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+
+    }
+
+    public List<mailMsg> gatAllPayBackCompletedLoans() {
+
+
+        class MyRunnable implements Runnable {
+            List<mailMsg> ans;
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Call<List<mailMsg>> call = jsonPlaceHolderApi.gatAllPayBackCompletedLoans(token);
 
                 try {
                     Response<List<mailMsg>> response = call.execute();
