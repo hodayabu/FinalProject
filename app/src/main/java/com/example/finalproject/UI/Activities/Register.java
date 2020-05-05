@@ -60,9 +60,6 @@ public class Register extends menuActivity {
     private final static int IMAGE_RESULT = 200;
     Bitmap mBitmap;
 
-
-
-
     private TextInputLayout textInputEmail;
     private TextInputLayout textInputUsername;
     private TextInputLayout textInputPassword;

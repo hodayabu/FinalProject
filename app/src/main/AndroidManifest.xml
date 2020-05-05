@@ -28,7 +28,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".UI.Activities.loansCompleted"></activity>
+        <activity android:name=".UI.Activities.userReviews"></activity>
+        <activity android:name=".UI.Activities.noResult" />
+        <activity android:name=".UI.Activities.payBackCompleted" />
+        <activity android:name=".UI.Activities.monthDebt" />
+        <activity android:name=".UI.Activities.loansCompleted" />
         <activity android:name=".UI.Activities.paypalTest" />
         <activity android:name=".UI.Activities.payPal" />
         <activity android:name=".UI.Activities.giver_payments" />
@@ -60,7 +64,16 @@
         <activity android:name=".UI.Activities.Register" />
         <activity android:name=".UI.Activities.AskedLoans" />
         <activity android:name=".UI.Activities.PostedLoans" />
-        <activity android:name=".UI.Activities.HomePage" />
+        <activity android:name=".UI.Activities.HomePage">
+            <intent-filter>
+                <data android:scheme="studentsbank" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".UI.Activities.MainActivity"
             android:exported="true">

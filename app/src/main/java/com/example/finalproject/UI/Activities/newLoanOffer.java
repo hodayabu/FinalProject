@@ -48,9 +48,6 @@ public class newLoanOffer extends menuActivity implements AdapterView.OnItemSele
 
                 if(validInput(period.getEditText().getText().toString(),rankFilter.getEditText().getText().toString(),amount)) {
                     int loadId=postNewLoanOffer(period.getEditText().getText().toString(),rankFilter.getEditText().getText().toString(),amount);
-                    System.out.println("***************************************");
-                    System.out.println("id of offer got from new loan offer screen:    "+loadId);
-                    System.out.println("***************************************");
                     Toast.makeText(newLoanOffer.this,"Offer Posted Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(newLoanOffer.this, FindMatch.class);
                     Bundle b = new Bundle();

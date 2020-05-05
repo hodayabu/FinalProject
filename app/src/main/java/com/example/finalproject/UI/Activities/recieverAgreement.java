@@ -42,15 +42,17 @@ public class recieverAgreement extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //send to server all loan data and show alert that the system sends the agreement to the giver and wait for the money to come.
-                Bundle b = getIntent().getExtras();
-                if(b != null) {
-                    int loanId=b.getInt("loanId");
-                    String giver=b.getString("giver");
-                    ViewModel.getInstance().AgreementFromReciever(loanId,giver);
-                    alert("Your Agreement has successful send to "+giver+".\nPlease follow your application mail box often for updates.");
-                }
-                else{
-                    Toast.makeText(recieverAgreement.this,"An error accord. Check your internet connection.",Toast.LENGTH_SHORT).show();
+                String signature = digitalSignature.getText().toString().trim();
+                if(correctFullName(signature)) {
+                    Bundle b = getIntent().getExtras();
+                    if (b != null) {
+                        int loanId = b.getInt("loanId");
+                        String giver = b.getString("giver");
+                        ViewModel.getInstance().AgreementFromReciever(loanId, giver);
+                        alert("Your Agreement has successful send to " + giver + ".\nPlease follow your application mail box often for updates.");
+                    } else {
+                        Toast.makeText(recieverAgreement.this, "An error accord. Check your internet connection.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -60,13 +62,13 @@ public class recieverAgreement extends AppCompatActivity {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             String signature = digitalSignature.getText().toString().trim();
-            agree.setEnabled(!signature.isEmpty() && correctFullName(signature));
+            agree.setEnabled(!signature.isEmpty());
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String signature = digitalSignature.getText().toString().trim();
-            agree.setEnabled(!signature.isEmpty() && correctFullName(signature));
+            agree.setEnabled(!signature.isEmpty());
         }
 
         @Override

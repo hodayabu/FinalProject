@@ -7,6 +7,7 @@ import com.example.finalproject.ResponseObjects.mailMsg;
 import com.example.finalproject.ResponseObjects.postOffer;
 import com.example.finalproject.ResponseObjects.postRequest;
 import com.example.finalproject.ResponseObjects.postedLoan;
+import com.example.finalproject.ResponseObjects.reviewData;
 import com.example.finalproject.ResponseObjects.userInfo;
 
 import java.util.List;
@@ -19,27 +20,6 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface jsonPlaceHolderApi {
-    //all of the request to the server with the method (get/post), specific url("aa") and the type of the returned value (Post)
-//
-//    //get request test
-//    @GET("test")
-//    Call<List<Post>> getPost();// a call for getPost will define a request to the server with "aa" url finish (after the baseUrl)
-//
-//    //post request test
-//    @POST("postTest")
-//    Call<Post> createPost(@Body Post post);
-//
-//    //post request test with token
-//    @POST("tokenTest")
-//    Call<Post> token(@Header("x-auth-token") String token);
-//
-//    //send and recived simple json
-//    @POST("jsonTest")
-//    Call<ResponseBody> getJson(@Body Map<String,String> s);
-
-
-
-    ////////////////////////////// Real Functions!///////////////////////////////
     @POST("login")
     Call<ResponseBody> signIn(@Body Map<String,String> map);
 
@@ -83,6 +63,22 @@ public interface jsonPlaceHolderApi {
     @POST("pay")
     Call<ResponseBody> paypalTest(@Body Map<String,Integer> map);
 
+    @POST("payBack")
+    Call<ResponseBody> paypalBack(@Body Map<String,Integer> map);
+
     @POST("private/gatAllCompletedLoans")
     Call<List<mailMsg>> gatAllCompletedLoans(@Header("x-auth-token") String token);
+
+
+    @POST("private/getMonthlyBalance")
+    Call<List<gaveAndOweLoans>> monthDebts(@Header("x-auth-token") String token);
+
+    @POST("private/gatAllPayBackCompletedLoans")
+    Call<List<mailMsg>> gatAllPayBackCompletedLoans(@Header("x-auth-token") String token);
+
+    @POST("/checkUserFullName")
+    Call<ResponseBody> checkUserFullName(@Body Map<String,String> map);
+
+    @POST("/getAllReviews")
+    Call<List<reviewData>> getAllReviews(@Body Map<String,String> map);
 }

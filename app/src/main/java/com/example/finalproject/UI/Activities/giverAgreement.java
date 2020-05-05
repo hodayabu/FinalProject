@@ -35,21 +35,23 @@ public class giverAgreement extends menuActivity {
             @Override
             public void onClick(View v) {
                 //send to server all loan data and show alert that the system sends the offer to the reciever and wait for its respons.
-                Bundle b = getIntent().getExtras();
-                if(b != null) {
-                    String currentUserName = b.getString("userName");
-                    String period = b.getString("period");
-                    String description = b.getString("description");
-                    int amount = b.getInt("amount");
-                    float interest = b.getFloat("interest");
-                    String myUser=MainActivity.getDefaults("userName",giverAgreement.this);
-                    int offerLoanId=b.getInt("offerLoanId");
-                    int requestLoanId=b.getInt("requestLoanId");
-                    ViewModel.getInstance().AgreementFromGiver(myUser,currentUserName,period,description,amount,interest,offerLoanId,requestLoanId);
-                    alert("Your offer has successful send to "+currentUserName+".\nPlease follow your application mail box often for updates.");
-                }
-                else{
-                    Toast.makeText(giverAgreement.this,"An error accord. Check your internet connection.",Toast.LENGTH_SHORT).show();
+                String signature = digitalSignature.getText().toString().trim();
+                if(correctFullName(signature)) {
+                    Bundle b = getIntent().getExtras();
+                    if (b != null) {
+                        String currentUserName = b.getString("userName");
+                        String period = b.getString("period");
+                        String description = b.getString("description");
+                        int amount = b.getInt("amount");
+                        float interest = b.getFloat("interest");
+                        String myUser = MainActivity.getDefaults("userName", giverAgreement.this);
+                        int offerLoanId = b.getInt("offerLoanId");
+                        int requestLoanId = b.getInt("requestLoanId");
+                        ViewModel.getInstance().AgreementFromGiver(myUser, currentUserName, period, description, amount, interest, offerLoanId, requestLoanId);
+                        alert("Your offer has successful send to " + currentUserName + ".\nPlease follow your application mail box often for updates.");
+                    } else {
+                        Toast.makeText(giverAgreement.this, "An error accord. Check your internet connection.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -59,13 +61,13 @@ public class giverAgreement extends menuActivity {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             String signature = digitalSignature.getText().toString().trim();
-            AgreeAndSendOffer.setEnabled(!signature.isEmpty() && correctFullName(signature));
+            AgreeAndSendOffer.setEnabled(!signature.isEmpty());
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String signature = digitalSignature.getText().toString().trim();
-            AgreeAndSendOffer.setEnabled(!signature.isEmpty() && correctFullName(signature));
+            AgreeAndSendOffer.setEnabled(!signature.isEmpty());
         }
 
         @Override

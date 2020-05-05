@@ -1,7 +1,9 @@
 package com.example.finalproject.UI.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -59,11 +61,6 @@ public class HomePage extends menuActivity {
         //resize loans and owe according to the user balance
         balanceLoans();
         balanceOwe();
-
-
-        //loans.setLayoutParams (new ConstraintLayout.LayoutParams(100, 50));
-        //owes.setLayoutParams (new ConstraintLayout.LayoutParams(100, 50));
-
 
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +121,13 @@ public class HomePage extends menuActivity {
             }
         });
 
+
+        Uri data = this.getIntent().getData();
+        if (data != null && data.isHierarchical()) {
+            String uri = this.getIntent().getDataString();
+            Log.i("MyApp", "Deep link clicked " + uri);
+        }
+
     }
 
     private void balanceOwe() {
@@ -134,6 +138,8 @@ public class HomePage extends menuActivity {
         ViewGroup.LayoutParams params = owes.getLayoutParams();
         params.width = newWidth;
         owes.setLayoutParams(params);
+        owes.setText("your total debts:   "+totalOwe);
+
     }
 
     private void balanceLoans() {
@@ -145,6 +151,7 @@ public class HomePage extends menuActivity {
         ViewGroup.LayoutParams params = loans.getLayoutParams();
         params.width = newWidth;
         loans.setLayoutParams(params);
+        loans.setText("your total loans:   "+totalLoans);
     }
 
     private int calculateSize(int total) {

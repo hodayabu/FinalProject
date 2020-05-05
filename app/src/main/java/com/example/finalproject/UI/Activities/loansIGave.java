@@ -98,6 +98,10 @@ public class loansIGave extends menuActivity implements ImageAdapter.OnItemClick
 
     private void getUsersFromServer() {
         usersFromServer=ViewModel.getInstance().getAllLoansIGave();
+        if(usersFromServer.size()==0){
+            Intent intent = new Intent(loansIGave.this, noResult.class);
+            startActivity(intent);
+        }
     }
 
 

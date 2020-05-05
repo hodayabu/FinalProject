@@ -1,5 +1,6 @@
 package com.example.finalproject.UI.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +24,10 @@ public class AskedLoans extends menuActivity {
         askedLoansList = (ListView) findViewById(R.id.askedLoansList);
 
         final List<askedLoans> list = ViewModel.getInstance().getAllAskedLoans();
+        if(list.size()==0){
+            Intent intent = new Intent(AskedLoans.this, noResult.class);
+            startActivity(intent);
+        }
         ArrayList<String> fixedPostedLoans = fixList(list);
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, fixedPostedLoans);
         askedLoansList.setAdapter(arrayAdapter);

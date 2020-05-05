@@ -7,6 +7,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class loansIOwe extends menuActivity implements ImageAdapter.OnItemClickListener {
+public class monthDebt extends AppCompatActivity implements ImageAdapter.OnItemClickListener {
+
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
 
@@ -35,13 +37,13 @@ public class loansIOwe extends menuActivity implements ImageAdapter.OnItemClickL
     private DatabaseReference mDatabaseRef;
     private List<ImageDisplayItem> mUploads;
     private List<gaveAndOweLoans> usersFromServer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loans_iowe);
+        setContentView(R.layout.activity_month_debt);
 
-
-        mRecyclerView = findViewById(R.id.recycler_viewOwe);
+        mRecyclerView = findViewById(R.id.recycler_view_month_debt);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressCircle = findViewById(R.id.progress_circle);
@@ -57,10 +59,7 @@ public class loansIOwe extends menuActivity implements ImageAdapter.OnItemClickL
 
         //setAdapter with new objects
 
-
-
     }
-
 
     private void getUrlFromFirebase() {
 
@@ -71,26 +70,24 @@ public class loansIOwe extends menuActivity implements ImageAdapter.OnItemClickL
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Upload u = dataSnapshot1.getValue(Upload.class);
-                        ImageDisplayItem item=new ImageDisplayItem(createData(gaveAndOweLoans),u.getImageUrl(),gaveAndOweLoans.getGiver());
+                        ImageDisplayItem item=new ImageDisplayItem(createData(gaveAndOweLoans),u.getImageUrl(),gaveAndOweLoans.getGiver(),gaveAndOweLoans.getDescription(),gaveAndOweLoans.getInterest(),gaveAndOweLoans.getAmount(),gaveAndOweLoans.getLoanID());
                         mUploads.add(item);
                     }
 
 
-                    mAdapter = new ImageAdapter(loansIOwe.this, mUploads);
-                    mAdapter.setOnItemClickListener(loansIOwe.this);
-
-
+                    mAdapter = new ImageAdapter(monthDebt.this, mUploads);
+                    mAdapter.setOnItemClickListener(monthDebt.this);
                     mRecyclerView.setAdapter(mAdapter);
                     mProgressCircle.setVisibility(View.INVISIBLE);
                 }
 
                 private String createData(com.example.finalproject.ResponseObjects.gaveAndOweLoans gaveAndOweLoans) {
-                    return "You owe : "+gaveAndOweLoans.getAmount()+" NIS\nTO : "+gaveAndOweLoans.getGiver()+"\nInterest : "+gaveAndOweLoans.getInterest()+"%\nLoan Expiration Date : "+gaveAndOweLoans.getExpirationDate();
+                    return "You need to pay back : "+gaveAndOweLoans.getAmount()+" NIS\nTO : "+gaveAndOweLoans.getGiver()+"For "+gaveAndOweLoans.getDescription()+"\nInterest : "+gaveAndOweLoans.getInterest()+"%\nUntil : "+gaveAndOweLoans.getExpirationDate();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(loansIOwe.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(monthDebt.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                     mProgressCircle.setVisibility(View.INVISIBLE);
                 }
             });
@@ -99,9 +96,9 @@ public class loansIOwe extends menuActivity implements ImageAdapter.OnItemClickL
     }
 
     private void getUsersFromServer() {
-        usersFromServer= ViewModel.getInstance().getAllLoansIOwe();
+        usersFromServer= ViewModel.getInstance().getAllMonthDebts();
         if(usersFromServer.size()==0){
-            Intent intent = new Intent(loansIOwe.this, noResult.class);
+            Intent intent = new Intent(monthDebt.this, noResult.class);
             startActivity(intent);
         }
     }
@@ -109,14 +106,18 @@ public class loansIOwe extends menuActivity implements ImageAdapter.OnItemClickL
 
     @Override
     public void onItemClick(int position, ImageDisplayItem i) {
-        Intent intent = new Intent(loansIOwe.this, userProfile.class);
+        Intent intent = new Intent(monthDebt.this, payPal.class);
+        //pass to payment screen. need the user bank acount?
         Bundle b = new Bundle();
         b.putString("userName", i.getUserName());
+        b.putInt("amount",i.getAmount() );
+        b.putInt("loanId",i.getRequestId() );
+        b.putString("exparationDate", i.getExparationDate());
+        b.putString("description", i.getDescription());
+        b.putFloat("interest", i.getInterest());
+        b.putBoolean("payBack",true);
         intent.putExtras(b);
         startActivity(intent);
         finish();
-
-        //Toast.makeText(this,"Clicked on "+position+" with data: "+i.getUserName(),Toast.LENGTH_SHORT).show();
     }
-
 }

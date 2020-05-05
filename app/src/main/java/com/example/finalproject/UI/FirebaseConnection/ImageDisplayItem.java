@@ -30,7 +30,7 @@ public class ImageDisplayItem {
         this.requestId=requestId;
     }
 
-    //use in wait for approve
+    //use in wait for approve and month debt
     public ImageDisplayItem(String data, String imgUrl,String userName,String description,float interest,int amount,String exparationDate,int progressId) {
         this.data = data;
         this.imgUrl = imgUrl;

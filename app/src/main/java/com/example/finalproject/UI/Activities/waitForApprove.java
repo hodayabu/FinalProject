@@ -100,6 +100,10 @@ public class waitForApprove extends AppCompatActivity implements ImageAdapter.On
 
     private void getUsersFromServer() {
         usersFromServer= ViewModel.getInstance().getAllwaitingMsg();
+        if(usersFromServer.size()==0){
+            Intent intent = new Intent(waitForApprove.this, noResult.class);
+            startActivity(intent);
+        }
     }
 
 

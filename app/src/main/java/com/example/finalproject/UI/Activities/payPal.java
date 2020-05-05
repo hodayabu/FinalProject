@@ -16,6 +16,7 @@ public class payPal extends AppCompatActivity {
     Button payPalbutton;
     int amount;
     int loanId;
+    boolean payBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +33,16 @@ public class payPal extends AppCompatActivity {
                 if(b != null) {
                     amount = b.getInt("amount");
                     loanId=b.getInt("loanId");
+                    payBack=b.getBoolean("payBack");
                 }
                 //server send url for payment at this amount
-                String url=ViewModel.getInstance().paypalTest(amount,loanId);
+                String url;
+                if(payBack){
+                    url=ViewModel.getInstance().paypalBack(amount,loanId);
+                }
+                else{ url=ViewModel.getInstance().paypalTest(amount,loanId);}
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(browserIntent);
-                //server check if payment is completed and if so, change the record of this loan to - paid!
-
             }
         });
     }

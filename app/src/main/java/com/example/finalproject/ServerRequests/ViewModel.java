@@ -9,6 +9,7 @@ import com.example.finalproject.ResponseObjects.mailMsg;
 import com.example.finalproject.ResponseObjects.postOffer;
 import com.example.finalproject.ResponseObjects.postRequest;
 import com.example.finalproject.ResponseObjects.postedLoan;
+import com.example.finalproject.ResponseObjects.reviewData;
 import com.example.finalproject.ResponseObjects.userInfo;
 import com.example.finalproject.UI.Activities.MainActivity;
 
@@ -970,5 +971,49 @@ public class ViewModel {
             e.printStackTrace();
         }
         return myRunnable.ans;
+    }
+
+    public List<reviewData> getAllReviews(String user) {
+
+        class MyRunnable implements Runnable {
+            List<reviewData> ans;
+            @Override
+            public void run() {
+                Map<String, String> json = new HashMap<>();
+                json.put("name", user);
+                Call<List<reviewData>> call = jsonPlaceHolderApi.getAllReviews(json);
+
+                try {
+                    Response<List<reviewData>> response = call.execute();
+                    JSONArray data = null;
+
+                    if (response.body() == null) {
+                        System.out.println("No Body for req");
+                    } else {
+
+                        if (!response.isSuccessful()) {
+                            System.out.println(("CodeError: " + response.code()));
+                            return;
+                        }
+                        List<reviewData> allreviews = response.body();
+                        ans=allreviews;
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }//run
+        }//Runnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+
     }
 }

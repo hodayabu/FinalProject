@@ -3,22 +3,25 @@ package com.example.finalproject.ResponseObjects;
     This Object represent loan object of the server.
     use in: 1. get all loans i asked for.
             2. get all loans i gave.
+            3. month debts.
  */
 public class gaveAndOweLoans {
 
-    int loanID;
+    int id;
     String giver;
     String reciever;
     String experationDate;
+    String description;
     int amount;
     float interest;
 
 
-    public gaveAndOweLoans(int loanID, String giver, String receiver, String expirationDate,int amount, float interest) {
-        this.loanID = loanID;
+    public gaveAndOweLoans(int loanID, String giver, String receiver,String description, String expirationDate,int amount, float interest) {
+        this.id = loanID;
         this.giver = giver;
         this.reciever = receiver;
         this.experationDate = expirationDate;
+        this.description = description;
         this.amount=amount;
         this.interest = interest;
     }
@@ -32,11 +35,11 @@ public class gaveAndOweLoans {
     }
 
     public int getLoanID() {
-        return loanID;
+        return id;
     }
 
     public void setLoanID(int loanID) {
-        this.loanID = loanID;
+        this.id = loanID;
     }
 
     public String getGiver() {
@@ -71,6 +74,11 @@ public class gaveAndOweLoans {
         this.interest = interest;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
-
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

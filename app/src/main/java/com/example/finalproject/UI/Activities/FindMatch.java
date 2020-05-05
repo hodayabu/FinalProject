@@ -112,6 +112,10 @@ public class FindMatch extends menuActivity implements ImageAdapter.OnItemClickL
     private void getUsersFromServer() {
         //the server finds potential users who need this amount **(more or less)**
         usersFromServer= ViewModel.getInstance().findMatch(rankFilter,amount);
+        if(usersFromServer.size()==0){
+            Intent intent = new Intent(FindMatch.this, noResult.class);
+            startActivity(intent);
+        }
     }
 
 

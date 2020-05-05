@@ -69,10 +69,6 @@ public class giver_payments extends AppCompatActivity implements ImageAdapter.On
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Upload u = dataSnapshot1.getValue(Upload.class);
-                        //********************************
-                        //********************************
-                        //********************************
-
                         ImageDisplayItem item=new ImageDisplayItem(createData(loanInProgress),u.getImageUrl(),loanInProgress.getReciever(),loanInProgress.getDescription(),loanInProgress.getInterest(),loanInProgress.getAmount(),loanInProgress.getExpirationDate(),loanInProgress.getAgreeId());
                         mUploads.add(item);
                     }
@@ -85,10 +81,6 @@ public class giver_payments extends AppCompatActivity implements ImageAdapter.On
                 }
 
                 private String createData(com.example.finalproject.ResponseObjects.agreementData loanInProgress) {
-                    //********************************
-                    //********************************
-                    //********************************
-                    //********************************
                     return loanInProgress.getReciever()+" has excepted your loan for "+loanInProgress.getAmount()+" NIS, for "+loanInProgress.getDescription()+".\nThe interest for this loan is "+loanInProgress.getInterest()+".\nClick here for payment.";
                 }
 
@@ -104,6 +96,10 @@ public class giver_payments extends AppCompatActivity implements ImageAdapter.On
 
     private void getUsersFromServer() {
         usersFromServer= ViewModel.getInstance().getAllwaitingForPayment();
+        if(usersFromServer.size()==0){
+            Intent intent = new Intent(giver_payments.this, noResult.class);
+            startActivity(intent);
+        }
     }
 
 
@@ -119,6 +115,7 @@ public class giver_payments extends AppCompatActivity implements ImageAdapter.On
         b.putString("exparationDate", i.getExparationDate());
         b.putString("description", i.getDescription());
         b.putFloat("interest", i.getInterest());
+        b.putBoolean("payBack",false);
         intent.putExtras(b);
         startActivity(intent);
         finish();

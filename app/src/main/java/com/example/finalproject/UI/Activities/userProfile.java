@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class userProfile extends menuActivity {
     String currentUserName;
     private DatabaseReference mDatabaseRef;
     String facebookUrl;
+    Button reviews;
 
 
     @Override
@@ -48,6 +50,7 @@ public class userProfile extends menuActivity {
         mail=(TextView)findViewById(R.id.mail);
         university=(TextView)findViewById(R.id.university);
         profilePic=(ImageView)findViewById(R.id.profileImg) ;
+        reviews=(Button) findViewById(R.id.show_reviews) ;
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
 
@@ -63,6 +66,18 @@ public class userProfile extends menuActivity {
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(facebookUrl));
                 startActivity(browserIntent);
+            }
+        });
+
+        reviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(userProfile.this, userReviews.class);
+                Bundle b = new Bundle();
+                b.putString("user",currentUserName );
+                startActivity(intent);
+                finish();
             }
         });
 

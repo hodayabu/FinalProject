@@ -16,34 +16,32 @@ import com.example.finalproject.ServerRequests.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class loansCompleted extends AppCompatActivity {
-    ListView loansCompleted;
+public class payBackCompleted extends AppCompatActivity {
+    ListView payBackCompleted;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loans_completed);
+        setContentView(R.layout.activity_pay_back_completed);
 
-        loansCompleted = (ListView) findViewById(R.id.loansCompleted);
+        payBackCompleted = (ListView) findViewById(R.id.payBackCompleted);
 
-        final List<mailMsg> list = ViewModel.getInstance().gatAllCompletedLoans();
+        final List<mailMsg> list = ViewModel.getInstance().gatAllPayBackCompletedLoans();
         if(list.size()==0){
-            Intent intent = new Intent(loansCompleted.this, noResult.class);
+            Intent intent = new Intent(payBackCompleted.this, noResult.class);
             startActivity(intent);
         }
         ArrayList<String> fixedPostedLoans = fixList(list);
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, fixedPostedLoans);
-        loansCompleted.setAdapter(arrayAdapter);
+        payBackCompleted.setAdapter(arrayAdapter);
 
-        loansCompleted.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        payBackCompleted.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(loansCompleted.this, "item id: " + list.get(position).getId(), Toast.LENGTH_SHORT).show();
-                //To-Do Add option for edit posted loan on click.
+
             }
         });
-
-
     }
 
     private ArrayList<String> fixList(List<mailMsg> list) {
