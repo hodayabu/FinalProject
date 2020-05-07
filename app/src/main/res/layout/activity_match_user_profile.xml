@@ -6,15 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".UI.Activities.MatchUserProfile">
 
+    <Button
+        android:id="@+id/show_reviews"
+        android:layout_width="110dp"
+        android:layout_height="89dp"
+        android:background="@drawable/button_star"
+        android:text="Reviews"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.984"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.974" />
+
 
     <Button
         android:id="@+id/sendFinalOffer"
-        android:layout_width="173dp"
-        android:layout_height="57dp"
+        android:layout_width="137dp"
+        android:layout_height="64dp"
+        android:background="@color/colorbutton"
         android:text="Send Offer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.934" />

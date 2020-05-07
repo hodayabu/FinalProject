@@ -69,7 +69,6 @@ public interface jsonPlaceHolderApi {
     @POST("private/gatAllCompletedLoans")
     Call<List<mailMsg>> gatAllCompletedLoans(@Header("x-auth-token") String token);
 
-
     @POST("private/getMonthlyBalance")
     Call<List<gaveAndOweLoans>> monthDebts(@Header("x-auth-token") String token);
 
@@ -81,4 +80,16 @@ public interface jsonPlaceHolderApi {
 
     @POST("/getAllReviews")
     Call<List<reviewData>> getAllReviews(@Body Map<String,String> map);
+
+    @POST("private/sendReview")
+    Call<ResponseBody> sendReview(@Header("x-auth-token") String token,@Body Map<String,String> json);
+
+    @POST("/register")
+    Call<ResponseBody> register(@Body Map<String,String> map);
+
+    @POST("private/fillPersonalDetails")
+    Call<ResponseBody> fillPersonalDetails(@Header("x-auth-token") String toke);
+
+    @POST("private/createPersonalDetails")
+    Call<ResponseBody> personalDetails(@Header("x-auth-token") String token,@Body Map<String,Integer> json);
 }

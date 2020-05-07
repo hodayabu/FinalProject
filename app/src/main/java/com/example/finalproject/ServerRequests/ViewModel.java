@@ -567,8 +567,6 @@ public class ViewModel {
 
 
 
-        //call server and check if the full name of this user is correct.
-        //******maybe ruturn the real full name and compare- so if there is an error- show the user his registered full name
     }
 
 
@@ -600,14 +598,6 @@ public class ViewModel {
 
             }
         });
-
-
-
-
-
-        //call server to insert the data to table "approval_progress" with boolean 0 (one side approve only)
-        //add to "mail" table under category 1 with the receiver user name
-        //remove offer from offered_loans in server
     }
 
 
@@ -1014,6 +1004,168 @@ public class ViewModel {
             e.printStackTrace();
         }
         return myRunnable.ans;
+
+    }
+
+    public void sendReview(String userName, String review, float rateValue) {
+
+
+        String token = MainActivity.getDefaults("token", context);
+        Map<String,String> json=new HashMap<>();
+        json.put("userName",userName);
+        json.put("review",review);
+        json.put("score", rateValue+"");
+        Call<ResponseBody> call=jsonPlaceHolderApi.sendReview(token, json);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(!response.isSuccessful()){
+                    MainActivity.toast("Review send failed",context);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MainActivity.toast("Review send failed",context);
+
+            }
+        });
+
+
+    }
+
+    public boolean register(String username, String password, String fullName, String email, String phone, String grade, String school, String facebook) {
+        class MyRunnable implements Runnable {
+            boolean ans;
+
+
+            @Override
+            public void run() {
+                Map<String, String> json = new HashMap<>();
+                json.put("userName", username);
+                json.put("password", password);
+                json.put("fullName", fullName);
+                json.put("email", email);
+                json.put("phone", phone);
+                json.put("grade", grade);
+                json.put("school", school);
+                json.put("facebook", facebook);
+
+                Call<ResponseBody> call = jsonPlaceHolderApi.register(json);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+                    try {
+                        if (response.body() == null) {
+                            ans = false;
+                            System.out.println("No Body for req");
+                        } else {
+                            data = new JSONObject(response.body().string());
+                            if(data.get("value").equals("true"))
+                                this.ans = true;
+                            else this.ans=false;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }//MyRunnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+    }
+
+    public boolean fillPersonalDetails() {
+        class MyRunnable implements Runnable {
+            boolean ans;
+
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Call<ResponseBody> call = jsonPlaceHolderApi.fillPersonalDetails(token);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+                    try {
+                        if (response.body() == null) {
+                            ans = false;
+                            System.out.println("No Body for req");
+                        } else {
+                            data = new JSONObject(response.body().string());
+                            if(data.get("value").equals("true"))
+                                this.ans = true;
+                            else this.ans=false;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }//MyRunnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return myRunnable.ans;
+    }
+
+
+    public void personalDetails(int income, int age, int parents, int minus, int debts, int facebook, int friends, int instagram) {
+
+        String token = MainActivity.getDefaults("token", context);
+        Map<String,Integer> json=new HashMap<>();
+        json.put("income",income);
+        json.put("age",age);
+        json.put("parents", parents);
+        json.put("minus", minus);
+        json.put("debts", debts);
+        json.put("facebook", facebook);
+        json.put("friends", friends);
+        json.put("instagram", instagram);
+        Call<ResponseBody> call=jsonPlaceHolderApi.personalDetails(token, json);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(!response.isSuccessful()){
+                    MainActivity.toast("personalDetails send failed",context);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MainActivity.toast("personalDetails send failed",context);
+
+            }
+        });
+
+
 
     }
 }

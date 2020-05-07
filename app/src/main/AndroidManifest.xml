@@ -28,7 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".UI.Activities.userReviews"></activity>
+        <activity android:name=".UI.Activities.personalDetails"></activity>
+        <activity android:name=".UI.Activities.reviewUserAfterLoan" />
+        <activity android:name=".UI.Activities.userReviews" />
         <activity android:name=".UI.Activities.noResult" />
         <activity android:name=".UI.Activities.payBackCompleted" />
         <activity android:name=".UI.Activities.monthDebt" />

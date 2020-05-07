@@ -52,7 +52,7 @@ public class userReviews extends AppCompatActivity {
         ArrayList<String> ans = new ArrayList<>();
         int counter = 1;
         for (reviewData reviewData : list) {
-            String review=reviewData.getReviewer()+" said "+ reviewData.getReview()+". \nScore: "+reviewData.getReview_score();
+            String review="User name: "+reviewData.getReviewer()+"\nReview: "+ reviewData.getReview()+". \nScore: "+reviewData.getReview_score();
             ans.add(review);
             counter++;
         }

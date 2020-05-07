@@ -40,6 +40,7 @@ public class MatchUserProfile extends AppCompatActivity {
     Button sendOffer;
     int offerLoanId;
     int requestLoanId;
+    Button review;
 
     //data type to pass for giver agreement
     private String period;
@@ -56,6 +57,7 @@ public class MatchUserProfile extends AppCompatActivity {
 
         name=(TextView)findViewById(R.id.MName);
         sendOffer=(Button) findViewById(R.id.sendFinalOffer);
+        review=(Button) findViewById(R.id.show_reviews);
         facebook=(TextView)findViewById(R.id.Mfacebook);
         phone=(TextView)findViewById(R.id.Mphone);
         mail=(TextView)findViewById(R.id.Mmail);
@@ -76,6 +78,18 @@ public class MatchUserProfile extends AppCompatActivity {
         }
         loadImg();
         loadInfo();
+
+        review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MatchUserProfile.this, userReviews.class);
+                Bundle b = new Bundle();
+                b.putString("user",currentUserName );
+                startActivity(intent);
+                finish();
+            }
+        });
 
         sendOffer.setOnClickListener(new View.OnClickListener() {
             @Override

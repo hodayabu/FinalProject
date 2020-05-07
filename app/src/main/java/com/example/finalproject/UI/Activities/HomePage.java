@@ -116,8 +116,14 @@ public class HomePage extends menuActivity {
         newRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomePage.this, newLoanRequest.class);
-                startActivity(intent);
+                if(ViewModel.getInstance().fillPersonalDetails()) {
+                    Intent intent = new Intent(HomePage.this, newLoanRequest.class);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(HomePage.this, personalDetails.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -132,7 +138,11 @@ public class HomePage extends menuActivity {
 
     private void balanceOwe() {
         String strTotalOwe=MainActivity.getDefaults("totalOwes",HomePage.this);
-        int totalOwe=Integer.parseInt(strTotalOwe);
+        int totalOwe;
+        if(strTotalOwe.equals("null")){
+            totalOwe =0;
+        }
+        else totalOwe=Integer.parseInt(strTotalOwe);
         int newWidth= calculateSize(totalOwe);
 
         ViewGroup.LayoutParams params = owes.getLayoutParams();
@@ -145,7 +155,11 @@ public class HomePage extends menuActivity {
     private void balanceLoans() {
 
         String strTotalLoans=MainActivity.getDefaults("totalLoans",HomePage.this);
-        int totalLoans=Integer.parseInt(strTotalLoans);
+        int totalLoans;
+        if(strTotalLoans.equals("null")){
+            totalLoans =0;
+        }
+        else  totalLoans=Integer.parseInt(strTotalLoans);
         int newWidth= calculateSize(totalLoans);
 
         ViewGroup.LayoutParams params = loans.getLayoutParams();

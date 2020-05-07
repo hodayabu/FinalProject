@@ -1,15 +1,13 @@
 package com.example.finalproject.UI.Activities;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,15 +15,30 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Patterns;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.finalproject.R;
+import com.example.finalproject.ServerRequests.ViewModel;
 import com.example.finalproject.ServerRequests.jsonPlaceHolderApi;
+import com.example.finalproject.UI.FirebaseConnection.Upload;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,18 +66,35 @@ public class Register extends menuActivity {
 
     jsonPlaceHolderApi apiService;
     Uri picUri;
+    private static final int PICK_IMAGE_REQUEST = 1;
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<>();
     private ArrayList<String> permissions = new ArrayList<>();
     private final static int ALL_PERMISSIONS_RESULT = 107;
     private final static int IMAGE_RESULT = 200;
-    Bitmap mBitmap;
+    private ProgressBar mProgressBar;
+
+    private Uri mImageUri;
+
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+    private StorageTask mUploadTask;
+
 
     private TextInputLayout textInputEmail;
     private TextInputLayout textInputUsername;
+    private TextInputLayout textInputFullname;
     private TextInputLayout textInputPassword;
+    private TextInputLayout text_input_phone;
+    private TextInputLayout text_input_grade;
+    private TextInputLayout text_input_university;
+    private TextInputLayout text_input_facebookUrl;
     private Button chooseImage;
-    private Button uploadImage;
+    private Button confirmRegister;
+    private ImageView mImageView;
+    private ArrayList<String> schools;
+    private boolean imageChoos = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,34 +103,76 @@ public class Register extends menuActivity {
 
         textInputEmail = findViewById(R.id.text_input_email);
         textInputUsername = findViewById(R.id.text_input_username);
+        textInputFullname = findViewById(R.id.text_input_fullname);
         textInputPassword = findViewById(R.id.text_input_password);
+        text_input_phone = findViewById(R.id.text_input_phone);
+        text_input_grade = findViewById(R.id.text_input_grade);
+        text_input_university = findViewById(R.id.text_input_university);
+        text_input_facebookUrl = findViewById(R.id.text_input_facebookUrl);
+
         chooseImage = findViewById(R.id.chooseImage);
-        uploadImage = findViewById(R.id.uploadImage);
+        confirmRegister = findViewById(R.id.confirmRegister);
+        mImageView = findViewById(R.id.imageViewRegister);
+        mProgressBar = findViewById(R.id.progress_bar);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+
+        schools = new ArrayList<>();
+        schools.add("BGU");
+        schools.add("Sapir");
+        schools.add("Tel Aviv");
+
         askPermissions();
         initRetrofitClient();
-
 
         chooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(getPickImageChooserIntent(), IMAGE_RESULT);
+                //startActivityForResult(getPickImageChooserIntent(), IMAGE_RESULT);
+                openFileChooser();
+
             }
 
         });
 
-        uploadImage.setOnClickListener(new View.OnClickListener() {
+        confirmRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mBitmap != null)
-                    System.out.println("l");
-                    //multipartImageUpload();
-                else {
-                    Toast.makeText(getApplicationContext(), "Bitmap is null. Try again", Toast.LENGTH_SHORT).show();
+                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                    Toast.makeText(Register.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                } else {
+                    if(valid() && imageChoos) {
+                        String username = textInputUsername.getEditText().getText().toString();
+                        String password = textInputPassword.getEditText().getText().toString();
+                        String fullName = textInputFullname.getEditText().getText().toString();
+                        String email = textInputEmail.getEditText().getText().toString();
+                        String phone = text_input_phone.getEditText().getText().toString();
+                        String grade = text_input_grade.getEditText().getText().toString();
+                        String school = text_input_university.getEditText().getText().toString();
+                        String facebook = text_input_facebookUrl.getEditText().getText().toString();
+
+                        if(ViewModel.getInstance().register(username, password, fullName, email, phone, grade, school, facebook)){
+                            uploadFile();
+                            Intent intent = new Intent(Register.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(Register.this, "Connection Error", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                    else {
+                        Toast.makeText(Register.this, "Fill All Fields.\nPassword need to include 1 digit, at least 1 upper case char and at least 1 special char ", Toast.LENGTH_SHORT).show();
+
+                    }
                 }
             }
         });
 
     }
+
+
 
     private boolean validateEmail() {
         String emailInput = textInputEmail.getEditText().getText().toString().trim();
@@ -147,26 +219,88 @@ public class Register extends menuActivity {
         }
     }
 
-    public void confirmInput(View v) {
-        if (!validateEmail() | !validateUsername() | !validatePassword()) {
-            return;
+
+    private boolean validateFullName() {
+        String fullNameInput = textInputFullname.getEditText().getText().toString().trim();
+
+        if (fullNameInput.isEmpty()) {
+            textInputFullname.setError("Field can't be empty");
+            return false;
+        } else {
+            textInputFullname.setError(null);
+            return true;
         }
-
-        String input = "Email: " + textInputEmail.getEditText().getText().toString();
-        input += "\n";
-        input += "Username: " + textInputUsername.getEditText().getText().toString();
-        input += "\n";
-        input += "Password: " + textInputPassword.getEditText().getText().toString();
-
-        Toast.makeText(this, input, Toast.LENGTH_SHORT).show();
     }
 
+    private boolean validatePhone() {
+        String phone = text_input_phone.getEditText().getText().toString().trim();
+        if (phone.isEmpty()) {
+            text_input_phone.setError("Field can't be empty");
+            return false;
+        } else if (!Patterns.PHONE.matcher(phone).matches()) {
+            text_input_phone.setError("Not a phone number");
+            return false;
+        } else {
+            text_input_phone.setError(null);
+            return true;
+        }
+    }
 
+    private boolean validateGPA() {
+        String gpa = text_input_grade.getEditText().getText().toString().trim();
+        try {
+            if (gpa.isEmpty()) {
+                text_input_grade.setError("Field can't be empty");
+                return false;
+            } else if (Integer.parseInt(gpa) > 100 || Integer.parseInt(gpa) < 0) {
+                text_input_grade.setError("Not a grade");
+                return false;
+            } else {
+                text_input_grade.setError(null);
+                return true;
+            }
+        }
+        catch (Exception e){
+            text_input_grade.setError("Not a grade");
+        }
+        return false;
+    }
 
+    private boolean validateSchool() {
+        String school = text_input_university.getEditText().getText().toString().trim();
 
+        if (school.isEmpty()) {
+            text_input_university.setError("Field can't be empty");
+            return false;
+        } else if (!schools.contains(school)) {
+            text_input_university.setError("You can choose - BGU/Sapir/Tel Aviv");
+            return false;
+        } else {
+            text_input_university.setError(null);
+            return true;
+        }
+    }
 
+    private boolean validateFacebook() {
+        String facebook = text_input_facebookUrl.getEditText().getText().toString().trim();
 
+        if (facebook.isEmpty()) {
+            text_input_facebookUrl.setError("Field can't be empty");
+            return false;
+        } else if (!Patterns.WEB_URL.matcher(facebook).matches()) {
+            text_input_facebookUrl.setError("Not a URL");
+            return false;
+        } else {
+            text_input_facebookUrl.setError(null);
+            return true;
+        }
+    }
 
+    public boolean valid() {
+       if(!validateEmail() || !validateUsername() || !validatePassword()|| !validateFullName() ||!validatePhone() ||!validateGPA() ||!validateSchool() ||!validateFacebook())
+           return false;
+       return true;
+    }
 
     //ask from user permittions
     private void askPermissions() {
@@ -187,7 +321,7 @@ public class Register extends menuActivity {
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.16:3001/").client(client).build().create(jsonPlaceHolderApi.class);
+        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.13:3000/").client(client).build().create(jsonPlaceHolderApi.class);
     }
 
 
@@ -245,36 +379,36 @@ public class Register extends menuActivity {
         }
         return outputFileUri;
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-
-            ImageView imageView = findViewById(R.id.imageView);
-
-            if (requestCode == IMAGE_RESULT) {
-
-
-                String filePath = getImageFilePath(data);
-                if (filePath != null) {
-                    //try ( InputStream is = new URL( filePath ).openStream() ) {
-                        //mBitmap = BitmapFactory.decodeStream( new URL( filePath ).openStream() );
-                    //} catch (MalformedURLException e) {
-                    //    e.printStackTrace();
-                    //} catch (IOException e) {
-                    //    e.printStackTrace();
-                    //}
-                    mBitmap = BitmapFactory.decodeFile(filePath);
-                    imageView.setImageBitmap(mBitmap);
-                }
-            }
-
-        }
-
-    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == Activity.RESULT_OK) {
+//
+//            ImageView imageView = findViewById(R.id.imageView);
+//
+//            if (requestCode == IMAGE_RESULT) {
+//
+//
+//                String filePath = getImageFilePath(data);
+//                if (filePath != null) {
+//                    //try ( InputStream is = new URL( filePath ).openStream() ) {
+//                        //mBitmap = BitmapFactory.decodeStream( new URL( filePath ).openStream() );
+//                    //} catch (MalformedURLException e) {
+//                    //    e.printStackTrace();
+//                    //} catch (IOException e) {
+//                    //    e.printStackTrace();
+//                    //}
+//                    mBitmap = BitmapFactory.decodeFile(filePath);
+//                    imageView.setImageBitmap(mBitmap);
+//                }
+//            }
+//
+//        }
+//
+//    }
 
     //return image path
     private String getImageFromFilePath(Intent data) {
@@ -386,68 +520,89 @@ public class Register extends menuActivity {
 
     }
 
-//
-//    //the server request
-//    private void multipartImageUpload() {
-//        try {
-//            File filesDir = getApplicationContext().getFilesDir();
-//            File file = new File(filesDir, "image" + ".png");
-//
-//            OutputStream os;
-//            try {
-//                os = new FileOutputStream(file);
-//                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-//                os.flush();
-//                os.close();
-//            } catch (Exception e) {
-//                Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
-//            }
-//
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            mBitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-//            byte[] bitmapdata = bos.toByteArray();
-//
-//
-//            FileOutputStream fos = new FileOutputStream(file);
-//            fos.write(bitmapdata);
-//            fos.flush();
-//            fos.close();
-//
-//
-//            RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
-//            MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
-//            RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload");
-//
-//            Call<ResponseBody> req = apiService.postImage(body, name);
-//            req.enqueue(new Callback<ResponseBody>() {
-//                @Override
-//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//
-//                    if (response.code() == 200) {
-//                        System.out.println(("Uploaded Successfully!"));
-//                    }
-//
-//                    Toast.makeText(getApplicationContext(), response.code() + " ", Toast.LENGTH_SHORT).show();
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                    System.out.println(("Uploaded Failed!"));
-//                    Toast.makeText(getApplicationContext(), "Request failed", Toast.LENGTH_SHORT).show();
-//                    t.printStackTrace();
-//                    System.out.println(t.getMessage());
-//                }
-//            });
-//
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//
+    ///////////////////////////////////////firebase////////////////////////////////
+
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        imageChoos = true;
+    }
+
+
+    private void uploadFile() {
+        if(!validateUsername()){
+            Toast.makeText(Register.this, "Please enter valid user name first", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (mImageUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(mImageUri));
+
+            mUploadTask = fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    System.out.println(uri.toString());
+                                    Toast.makeText(Register.this, "Upload successful", Toast.LENGTH_LONG).show();
+                                    Upload upload = new Upload(textInputUsername.getEditText().getText().toString(),uri.toString());
+                                    String uploadId = mDatabaseRef.push().getKey();
+                                    upload.setKey(uploadId);
+                                    mDatabaseRef.child(uploadId).setValue(upload);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    System.out.println("errrooorrrrrrrrrrrrrrrrrrrrr");
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressBar.setProgress((int) progress);
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+
+            Picasso.with(this).load(mImageUri).into(mImageView);
+        }
+    }
+
+
 
 
 }
