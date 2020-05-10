@@ -9,12 +9,22 @@ public class postRequest {
     int amount;
     String description;
     String video;
+    float rank;
 
 
-    public postRequest(int amount, String description, String video) {
+    public postRequest(int amount, String description, String video, float rank) {
         this.amount = amount;
         this.description = description;
         this.video = video;
+        this.rank = rank;
+    }
+
+    public float getRank() {
+        return rank;
+    }
+
+    public void setRank(float rank) {
+        this.rank = rank;
     }
 
     public int getAmount() {

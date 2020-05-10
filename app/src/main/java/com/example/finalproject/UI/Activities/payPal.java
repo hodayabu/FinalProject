@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.finalproject.R;
 import com.example.finalproject.ServerRequests.ViewModel;
 
-public class payPal extends AppCompatActivity {
+public class payPal extends menuActivity {
     //TO-DO update the textView with loan details
     Button payPalbutton;
     int amount;

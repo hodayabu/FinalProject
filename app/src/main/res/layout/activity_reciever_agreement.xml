@@ -7,12 +7,11 @@
     tools:context=".UI.Activities.recieverAgreement">
 
 
-
     <TextView
         android:id="@+id/loanDataAndObligation"
-        android:layout_width="257dp"
-        android:layout_height="229dp"
-        android:text="delete after finish---- put all details of loan here. add connection to legal agreement"
+        android:layout_width="387dp"
+        android:layout_height="336dp"
+        android:text="I hereby undertake to respect the terms of the agreement. I know that signing this document constitutes a legal obligation to repay the loan under the agreed terms."
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

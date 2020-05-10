@@ -8,12 +8,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.finalproject.R;
 import com.example.finalproject.ServerRequests.ViewModel;
 
-public class personalDetails extends AppCompatActivity {
+public class personalDetails extends menuActivity {
 
     RadioGroup radioGroupIncome;
     RadioGroup radioGroupAge;
@@ -109,7 +107,7 @@ public class personalDetails extends AppCompatActivity {
     }
 
     private String extractText(RadioGroup radioGroup) {
-        int radioId = radioGroupIncome.getCheckedRadioButtonId();
+        int radioId = radioGroup.getCheckedRadioButtonId();
         radioButton = findViewById(radioId);
         return radioButton.getText().toString();
     }

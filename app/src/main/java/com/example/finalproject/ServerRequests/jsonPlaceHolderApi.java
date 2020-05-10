@@ -92,4 +92,7 @@ public interface jsonPlaceHolderApi {
 
     @POST("private/createPersonalDetails")
     Call<ResponseBody> personalDetails(@Header("x-auth-token") String token,@Body Map<String,Integer> json);
+
+    @POST("private/calculateRank")
+    Call<ResponseBody> calculateRank(@Header("x-auth-token") String token,@Body Map<String,Integer> json);
 }

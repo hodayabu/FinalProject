@@ -7,8 +7,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.finalproject.R;
 import com.example.finalproject.ResponseObjects.mailMsg;
 import com.example.finalproject.ServerRequests.ViewModel;
@@ -16,7 +14,7 @@ import com.example.finalproject.ServerRequests.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class loansCompleted extends AppCompatActivity {
+public class loansCompleted extends menuActivity {
     ListView loansCompleted;
 
     @Override

@@ -218,9 +218,9 @@ public class ViewModel {
         return myRunnable.ans;
     }
 
-    public void postNewRequest(String desc, int amount) {
+    public void postNewRequest(String desc, int amount, float rank) {
         String token = MainActivity.getDefaults("token", context);
-        postRequest postRequest=new postRequest(amount,desc,"videoString");
+        postRequest postRequest=new postRequest(amount,desc,"videoString", rank);
         Call<ResponseBody> call=jsonPlaceHolderApi.postRequest(token,postRequest);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -492,20 +492,64 @@ public class ViewModel {
         return myRunnable.ans;
     }
 
-//****************************************************************************************************************
-//****************************************************************************************************************
-    //TO_DO- complete all server functions
-//****************************************************************************************************************
-//****************************************************************************************************************
-
     public boolean checkMailBox() {
         //call server- if there are new mails return true
         return true;
     }
 
-    public float calculateRank(String userName, int amount) {
-        //call server calculate with machine learning the interest for this user at this amount
-        return 2;
+    public Map<String,Float> calculateRank(int amount) {
+        //return 3;
+        class MyRunnable implements Runnable {
+
+            float interest;
+            float rank;
+
+            @Override
+            public void run() {
+                String token = MainActivity.getDefaults("token", context);
+                Map<String, Integer> json = new HashMap<>();
+                json.put("amount", amount);
+                Call<ResponseBody> call = jsonPlaceHolderApi.calculateRank(token, json);
+
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    JSONObject data = null;
+                    try {
+                        if (response.body() == null) {
+                            interest = 3;
+                            System.out.println("No Body for req");
+                        } else {
+                            data = new JSONObject(response.body().string());
+                            this.interest = Float.parseFloat(""+data.get("interest"));
+                            this.rank = Float.parseFloat(""+data.get("userRank"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }//MyRunnable
+
+        MyRunnable myRunnable = new MyRunnable();
+        Thread t = new Thread(myRunnable);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Map<String,Float> ans = new HashMap<>();
+        ans.put("interest",myRunnable.interest);
+        ans.put("rank",myRunnable.rank);
+        return ans;
+
     }
 
     public boolean checkUserFullName(String fullName, String userName) {

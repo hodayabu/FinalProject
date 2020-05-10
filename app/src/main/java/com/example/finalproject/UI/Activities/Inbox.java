@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.finalproject.R;
 
-public class Inbox extends AppCompatActivity {
+public class Inbox extends menuActivity {
 
     Button inbox_match;
     Button inbox_finalApprove;

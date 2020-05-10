@@ -14,13 +14,15 @@ import com.example.finalproject.R;
 import com.example.finalproject.ServerRequests.ViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Map;
+
 public class newLoanRequest extends menuActivity implements AdapterView.OnItemSelectedListener{
 
     TextView calculatedAmount;
     Button postRequest;
     private TextInputLayout textInputDescription;
     int amount=500;
-
+    float rank = 2;
 
 
     @Override
@@ -56,7 +58,6 @@ public class newLoanRequest extends menuActivity implements AdapterView.OnItemSe
                     String input="Please enter valid amount and loan reason";
                     Toast.makeText(getApplicationContext(), input, Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }
@@ -65,10 +66,10 @@ public class newLoanRequest extends menuActivity implements AdapterView.OnItemSe
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
         amount=Integer.parseInt(text);
-        float interest=ViewModel.getInstance().calculateRank(MainActivity.getDefaults("userName",newLoanRequest.this),amount);
-        float total=calculateAmount(interest);
-        calculatedAmount.setText("Amount To Return ( "+interest+"% interest) :"+total+" NIS");
-
+        Map<String,Float> ans = ViewModel.getInstance().calculateRank(amount);
+        float total=calculateAmount(ans.get("interest"));
+        this.rank = ans.get("rank");
+        calculatedAmount.setText("Amount To Return ( "+ans.get("interest")+"% interest) :"+total+" NIS");
     }
 
     private float calculateAmount(float interest) {
@@ -84,7 +85,7 @@ public class newLoanRequest extends menuActivity implements AdapterView.OnItemSe
 
 
     private void postNewLoanRequest(String desc, int amount) {
-        ViewModel.getInstance().postNewRequest(desc,amount);
+        ViewModel.getInstance().postNewRequest(desc,amount,rank);
     }
 
     private boolean validInput(String desc, int progress) {

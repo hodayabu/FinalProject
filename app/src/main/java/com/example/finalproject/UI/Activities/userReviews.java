@@ -7,8 +7,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.finalproject.R;
 import com.example.finalproject.ResponseObjects.reviewData;
 import com.example.finalproject.ServerRequests.ViewModel;
@@ -16,7 +14,7 @@ import com.example.finalproject.ServerRequests.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class userReviews extends AppCompatActivity {
+public class userReviews extends menuActivity {
     ListView reviewList;
 
     @Override

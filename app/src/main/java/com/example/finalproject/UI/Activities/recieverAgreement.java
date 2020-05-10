@@ -12,12 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject.R;
 import com.example.finalproject.ServerRequests.ViewModel;
 
-public class recieverAgreement extends AppCompatActivity {
+public class recieverAgreement extends menuActivity {
 
     TextView loanDataAndObligation;
     private EditText digitalSignature;
