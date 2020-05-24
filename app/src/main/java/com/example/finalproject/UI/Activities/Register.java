@@ -322,7 +322,7 @@ public class Register extends AppCompatActivity {
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://192.168.1.13:3000/").client(client).build().create(jsonPlaceHolderApi.class);
+        apiService = new Retrofit.Builder().baseUrl("http://sbserver-env.eba-ppt5gwe6.us-east-2.elasticbeanstalk.com/").client(client).build().create(jsonPlaceHolderApi.class);
     }
 
 

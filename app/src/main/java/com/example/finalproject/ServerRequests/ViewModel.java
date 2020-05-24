@@ -45,7 +45,7 @@ public class ViewModel {
 
     private ViewModel() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.13:3000/")//the server url
+                .baseUrl("http://sbserver-env.eba-ppt5gwe6.us-east-2.elasticbeanstalk.com/")//the server url
                 .addConverterFactory(GsonConverterFactory.create())//convert json that returns from server to java object that we created
                 .build();
         jsonPlaceHolderApi = retrofit.create(com.example.finalproject.ServerRequests.jsonPlaceHolderApi.class);
